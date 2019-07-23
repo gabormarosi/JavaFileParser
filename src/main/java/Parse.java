@@ -16,8 +16,19 @@ public class Parse {
 
     public static void main(String[] args) {
         BufferedReader reader;
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setUsername(parserUser);
+        factory.setPassword(parserPassword);
+        factory.setVirtualHost("/");
+        factory.setHost(parserHostname);
+        factory.setPort(parserPort);
+
         try {
             reader = new BufferedReader(new FileReader(parserPath));
+
+            Connection conn = factory.newConnection();
+            Channel channel = conn.createChannel();
+
             String line = reader.readLine();
             System.out.println("Header: "+line);
             line = reader.readLine();
@@ -27,8 +38,10 @@ public class Parse {
                 line = reader.readLine();
 
             }
+            channel.close();
+            conn.close();
             reader.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
